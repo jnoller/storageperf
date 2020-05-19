@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+targ=$1
+cd "${targ}" || exit 1
+
+# add check for dependencies
+
+package="https://www.python.org/ftp/python/3.8.3/Python-3.8.3.tgz"
+
+wget -c ${package} -O - | tar -xz
+cd Python-3.8*/ || exit 1
+./configure --enable-optimizations
+make
+python3 -m pyperformance list_groups
+
+
+
+  606  ./configure --prefix $PWD/compiled-py
+  607  make && make install
