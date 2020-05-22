@@ -8,16 +8,6 @@
 # /dev/sdd1      1056762036 13656352  989402260   2% /1024gb
 # /dev/sdc1      2113655728 13655060 1992610156   1% /2048gb
 
-# fdisk -l | grep Disk | grep "/dev" | awk '{print 21 tolower($3$4)}'
-
-root@iob2:~# fdisk -l | grep Disk | grep "/dev" | awk '{print $2 tolower($3$4)}'
-/dev/sdb:16gib,
-/dev/sda:30gib,
-/dev/sdc:2tib,
-/dev/sdd:1tib,
-/dev/sde:128gib,
-/dev/sdf:32gib,
-
 DEBUG=${DEBUG:=0}
 MAXRUNS=${MAXRUNS:=5}
 BCCENABLED=${BCCON:=0}
@@ -98,7 +88,18 @@ function onexit() {
     done
 }
 
-
+drive_directories () {
+    targets=("/ephemeral" "/os-disk")
+    disks=$(fdisk -l | grep Disk | grep "/dev" | awk '{print $2}' | cut -d ":" -f1)
+    for i in ${disks};
+    do
+        if [ "${i}" != "/dev/sda" ] && [ "${i}" != "/dev/sda" ]; then
+            sizen=$(fdisk "${i}" -l | grep Disk | grep "/dev" | awk '{print $3$4}' | cut -d "," -f1)
+            targets+=("/${sizen}")
+        fi
+    done
+    return targets
+}
 
 main () {
 
@@ -110,7 +111,7 @@ main () {
 
     interrogate
 
-    for directory in "${drive_dirs[@]}"; do
+    for directory in $(drive_directories); do
         dname=$(basename "${directory}")
         mkdir -p "${resultsdir}/${dname}"
         echo "moving to ${directory}"
