@@ -26,7 +26,7 @@ do
     elif [ "${i}" = "/dev/sdb" ]; then
         ln -fs /mnt /ephemeral
     else
-        echo "nah"
+        umount "${i}" || echo "not mounted"
         sizen=$(fdisk "${i}" -l | grep Disk | grep "/dev" | awk '{print $3$4}' | cut -d "," -f1)
         echo "${i} :: ${sizen}"
         mkdir -p "/${sizen}" || exit 1
@@ -36,11 +36,6 @@ do
         # [-i bytes-per-inode] [-I inode-size]
         mkfs.ext4 -F "${i}"  # TBD: -o agblksize={ 512 | 1024 | 2048 | 4096 } || exit 1
         echo "${i}    /${sizen} ext4  defaults,noatime        0 0" >>/etc/fstab
-        mount -o remount "${i}"
+        mount "${i}" || mount -o remount "${i}"
     fi
 done
-
-( cd /
-    ln -s /mnt /ephemeral
-    mkdir -p /os-disk
-)
