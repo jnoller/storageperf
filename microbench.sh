@@ -8,6 +8,15 @@
 # /dev/sdd1      1056762036 13656352  989402260   2% /1024gb
 # /dev/sdc1      2113655728 13655060 1992610156   1% /2048gb
 
+# fdisk -l | grep Disk | grep "/dev" | awk '{print 21 tolower($3$4)}'
+
+root@iob2:~# fdisk -l | grep Disk | grep "/dev" | awk '{print $2 tolower($3$4)}'
+/dev/sdb:16gib,
+/dev/sda:30gib,
+/dev/sdc:2tib,
+/dev/sdd:1tib,
+/dev/sde:128gib,
+/dev/sdf:32gib,
 
 DEBUG=${DEBUG:=0}
 MAXRUNS=${MAXRUNS:=5}
@@ -18,7 +27,7 @@ timestamp=$(date +%T)
 resultsdir_base="$PWD/test_results"
 resultsdir="${resultsdir_base}-${timestamp}"
 diagdir="${resultsdir}/diagnostics"
-testsdir="$PWD/micro_tests"
+testsdir="$PWD/user-tests"
 drive_dirs=("/os-disk" "/ephemeral" "/32gb" "/128gb" "/1024gb" "/2048gb")
 PROCESS_FORKS=()
 
