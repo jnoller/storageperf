@@ -18,7 +18,7 @@ resultsdir_base="$PWD/test_results"
 resultsdir="${resultsdir_base}-${timestamp}"
 diagdir="${resultsdir}/diagnostics"
 testsdir="$PWD/user-tests"
-drive_dirs=("/os-disk" "/ephemeral" "/32gb" "/128gb" "/1024gb" "/2048gb")
+targets=("/ephemeral" "/os-disk")
 PROCESS_FORKS=()
 
 interrogate () {
@@ -89,7 +89,6 @@ function onexit() {
 }
 
 drive_directories () {
-    targets=("/ephemeral" "/os-disk")
     disks=$(fdisk -l | grep Disk | grep "/dev" | awk '{print $2}' | cut -d ":" -f1)
     for i in ${disks};
     do
@@ -98,7 +97,6 @@ drive_directories () {
             targets+=("/${sizen}")
         fi
     done
-    return "${targets}"
 }
 
 main () {
@@ -110,8 +108,9 @@ main () {
     mkdir -p "${resultsdir}"
 
     interrogate
+    drive_directories
 
-    for directory in $(drive_directories); do
+    for directory in "${targets[@]}"; do
         dname=$(basename "${directory}")
         mkdir -p "${resultsdir}/${dname}"
         echo "moving to ${directory}"
