@@ -89,11 +89,11 @@ function onexit() {
 }
 
 drive_directories () {
-    disks=$(fdisk -l | grep Disk | grep "/dev" | awk '{print $2}' | cut -d ":" -f1)
+    disks=$(sudo fdisk -l | grep Disk | grep "/dev" | awk '{print $2}' | cut -d ":" -f1)
     for i in ${disks};
     do
         if [ "${i}" != "/dev/sda" ] && [ "${i}" != "/dev/sda" ]; then
-            sizen=$(fdisk "${i}" -l | grep Disk | grep "/dev" | awk '{print $3$4}' | cut -d "," -f1)
+            sizen=$(sudo fdisk "${i}" -l | grep Disk | grep "/dev" | awk '{print $3$4}' | cut -d "," -f1)
             targets+=("/${sizen}")
         fi
     done
