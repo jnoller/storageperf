@@ -24,6 +24,7 @@ do
     if [ "${i}" = "/dev/sda" ]; then
         mkdir -p /os-disk
     elif [ "${i}" = "/dev/sdb" ]; then
+        rm -f /ephemeral
         ln -fs /mnt /ephemeral
     else
         umount "${i}" || echo "not mounted"
