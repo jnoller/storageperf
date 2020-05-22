@@ -98,7 +98,7 @@ drive_directories () {
             targets+=("/${sizen}")
         fi
     done
-    return targets
+    return "${targets}"
 }
 
 main () {
