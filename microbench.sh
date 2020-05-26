@@ -118,7 +118,7 @@ main () {
         rm -rf "${directory:?}/*"
         globber="${testsdir}/*.sh"
         for f in $globber; do
-            echo "setting up for ${f}"
+            echo -e "setting up for ${f}:\n"
             scr="${directory}/scratch-temp"
             # Setup scratch directory for tests
             rm -rf "${scr}" && mkdir -p "${scr}"
@@ -139,7 +139,7 @@ main () {
             base=$(basename "${script}")
             diagdir="${resultsdir}/${directory}/diagnostics"
             mkdir -p "${diagdir}"
-            # spawn_watchers "${diagdir}"
+            spawn_watchers "${diagdir}"
             # exit
             # Run a loop of $MAXRUNS iterations
             for (( c=1; c<=MAXRUNS; c++ )); do
@@ -147,12 +147,13 @@ main () {
                 result="${resultsdir}${directory}.${base}.results"
                 echo "[TEST] disk: ${directory} test: ${script} run: $c stamp: $(date)"
                 /usr/bin/time -o "${result}" --append -f "%E real,%U user,%S sys" "${script}" "${scr}"
-                echo "[RESULT] result ${c}: $(tail -n 1 ${result})"
+                echo "[RESULT] disk: ${directory} test: ${script}  run: ${c}: $(tail -n 1 ${result})"
                 rm -rf "${scr}" && mkdir -p "${scr}"
             done
 
             rm -rf "${directory}/scratch-temp"
         done
+        echo -e "  \n"
     done
 }
 
