@@ -11,7 +11,7 @@
 DEBUG=${DEBUG:=0}
 MAXRUNS=${MAXRUNS:=5}
 BCCENABLED=${BCCON:=0}
-WARMCACHE=${WARMCACHE:=1}
+WARMCACHE=${WARMCACHE:=0}
 
 timestamp=$(date +%T)
 resultsdir_base="$PWD/test_results"
@@ -24,66 +24,59 @@ PROCESS_FORKS=()
 interrogate () {
     fn="${resultsdir}/system-info"
     echo "$(uname -a)" >>$fn
-    sudo echo "$(echo "cpu:    ")" "$(cat /proc/cpuinfo  | grep "model name" | head -1 | cut -d":" -f2)" >>$fn
-    sudo echo "$(echo "cores:    ")" "$(cat /proc/cpuinfo  | grep processor | wc -l)" >>$fn
+    sudo -i echo "$(echo "cpu:    ")" "$(cat /proc/cpuinfo  | grep "model name" | head -1 | cut -d":" -f2)" >>$fn
+    sudo -i echo "$(echo "cores:    ")" "$(cat /proc/cpuinfo  | grep processor | wc -l)" >>$fn
     echo "===========================================================" >> $fn
     for device in /sys/block/sd*;
     do
         echo "Device:     ${device}"
 
-        sudo echo "$(echo "scheduler:    ")" "$(cat $device/queue/scheduler)" >>$fn
-        sudo echo "$(echo "read_ahead_kb:    ")" "$(cat $device/queue/read_ahead_kb)" >>$fn
-        sudo echo "$(echo "max_sectors_kb:    ")" "$(cat $device/queue/max_sectors_kb)" >>$fn
+        sudo -i echo "$(echo "scheduler:    ")" "$(cat $device/queue/scheduler)" >>$fn
+        sudo -i echo "$(echo "read_ahead_kb:    ")" "$(cat $device/queue/read_ahead_kb)" >>$fn
+        sudo -i echo "$(echo "max_sectors_kb:    ")" "$(cat $device/queue/max_sectors_kb)" >>$fn
     done
-    sudo echo "$(echo "transparent_hugepage:    ")" "$(cat /sys/kernel/mm/transparent_hugepage/enabled)" >>$fn
-    sudo echo "$(echo "panic_on_oom:    ")" "$(cat /proc/sys/vm/panic_on_oom )">>$fn
-    sudo echo "$(echo "swappiness:    ")" "$(cat /proc/sys/vm/swappiness)" >>$fn
-    sudo echo "$(echo "kernel panic:    ")" "$(cat /proc/sys/kernel/panic)" >>$fn
+    sudo -i echo "$(echo "transparent_hugepage:    ")" "$(cat /sys/kernel/mm/transparent_hugepage/enabled)" >>$fn
+    sudo -i echo "$(echo "panic_on_oom:    ")" "$(cat /proc/sys/vm/panic_on_oom )">>$fn
+    sudo -i echo "$(echo "swappiness:    ")" "$(cat /proc/sys/vm/swappiness)" >>$fn
+    sudo -i echo "$(echo "kernel panic:    ")" "$(cat /proc/sys/kernel/panic)" >>$fn
     sudo echo "\n\n" >> $fn
-    sudo echo "$(df -h)" >>$fn
+    sudo -i echo "$(df -h)" >>$fn
     chmod a+rw ${fn}
 }
-
 
 spawn_watchers () {
     target=$1
     echo "diagnostics dir: ${target}"
+    mkdir -p ${target}
 
-
-    bcc_cmds=("ext4slower 1 -j"
-            "biosnoop -Q"
-            "gethostlatency"
-            "runqlat -m 5")
-    base_cmds=("iotop -b --only")
+    bcc_cmds=( "nohup /usr/share/bcc/tools/ext4slower 1 -j > ${target}/ext4slower.log 2>&1 &"
+            "nohup /usr/share/bcc/tools/biosnoop -Q > ${target}/biosnoop.log 2>&1 &"
+            "nohup /usr/share/bcc/tools/gethostlatency > ${target}/hostlatency.log 2>&1 &"
+            "nohup /usr/share/bcc/tools/runqlat -m 5 > ${target}/queuelatency.log 2>&1 &" )
+    base_cmds=( "/usr/sbin/iotop -b --only > ${target}/iotop.log 2>&1 &" )
     # add top cpu mem
 
     if [ "${BCCENABLED}" -eq 1 ]; then
-        for comm in ${bcc_cmds[*]}; do
-            precmd="sudo nohup bash"
-            bccpath="/usr/share/bcc/tools"
-            logn=$(echo "${comm}" | awk '{print $3}')
-            echo $logn
-            postcmd=">> ${target}/${logn}.log"
-            # Execute tracked subshell
-            echo "${precmd} ${bccpath}/${comm} ${postcmd}"
+
+        for comm in "${bcc_cmds[@]}"; do
+            eval "${comm}"
             new_pid=$!
-            PROCESS_FORKS+=("${new_pid}")
+            PROCESS_FORKS+=( "${new_pid}" )
+            echo ${PROCESS_FORKS[@]}
         done
     fi
-    for comm in ${base_cmds[*]}; do
-        precmd="sudo bash"
-        logn=$(echo "${comm}" | awk '{print $3}')
-        postcmd=">> ${target}/${logn}.log"
-        echo "${precmd} ${comm} ${postcmd}"
+    for comm in "${base_cmds[@]}"; do
+        eval "${comm}"
         new_pid=$!
-        echo $new_pid
-        PROCESS_FORKS+=("${new_pid}")
+        PROCESS_FORKS+=( "${new_pid}" )
+        echo ${PROCESS_FORKS[@]}
     done
 
 }
 
 function onexit() {
     for x in "${PROCESS_FORKS[@]}"; do
+        echo "kill $x"
         kill "${x}"
     done
 }
@@ -137,10 +130,9 @@ main () {
                 rm -rf "${scr}" && mkdir -p "${scr}"
             fi
             base=$(basename "${script}")
-            diagdir="${resultsdir}/${directory}/diagnostics"
+            diagdir="${resultsdir}${directory}/diagnostics"
             mkdir -p "${diagdir}"
             spawn_watchers "${diagdir}"
-            # exit
             # Run a loop of $MAXRUNS iterations
             for (( c=1; c<=MAXRUNS; c++ )); do
 

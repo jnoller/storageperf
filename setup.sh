@@ -23,14 +23,17 @@ for i in ${disks};
 do
     if [ "${i}" = "/dev/sda" ]; then
         mkdir -p /os-disk
+        chmod a+rwx /os-disk
     elif [ "${i}" = "/dev/sdb" ]; then
         rm -f /ephemeral
         ln -fs /mnt /ephemeral
+        chmod a+rwx /ephemeral
     else
         umount "${i}" || echo "not mounted"
         sizen=$(fdisk "${i}" -l | grep Disk | grep "/dev" | awk '{print $3$4}' | cut -d "," -f1)
         echo "${i} :: ${sizen}"
         mkdir -p "/${sizen}" || exit 1
+        chmod a+rwx "/${sizen}"
         parted "${i}" --script mklabel msdos mkpart primary ext4 0% 100% || exit 1
         # Leave mkfs defaults, permutations to test:
         # -b block-size [512 | 1024 | 2048 | 4096]

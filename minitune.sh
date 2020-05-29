@@ -3,7 +3,7 @@
 scheduler=${SCHEDULER:="mq-deadline"}
 read_ahead_kb=${READ_AHEAD_KB:="4096"}
 max_sectors_kb=${MAX_SECTORS_KB:="128"}
-queue_depth=${MAX_SECTORS_KB:="64"} # Need to validate Azure guidance re: qdepth also kernel ver
+queue_depth=${MAX_SECTORS_KB:="64"} # Need to validate Azure guidance re: qdepth also kernel version does not support
 transparent_hugepage=${TRANSPARENT_HUGEPAGE:="always"}
 
 
