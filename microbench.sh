@@ -62,23 +62,28 @@ spawn_watchers () {
             eval "${comm}"
             new_pid=$!
             PROCESS_FORKS+=( "${new_pid}" )
-            echo ${PROCESS_FORKS[@]}
         done
     fi
     for comm in "${base_cmds[@]}"; do
         eval "${comm}"
         new_pid=$!
         PROCESS_FORKS+=( "${new_pid}" )
-        echo ${PROCESS_FORKS[@]}
     done
 
 }
 
+kill_watch () {
+    for x in "${PROCESS_FORKS[@]}"; do
+        kill "${x}" >/dev/null 2>&1
+    done
+    PROCESS_FORKS=()
+}
+
 function onexit() {
     for x in "${PROCESS_FORKS[@]}"; do
-        echo "kill $x"
-        kill "${x}"
+        kill "${x}" >/dev/null 2>&1
     done
+    PROCESS_FORKS=()
 }
 
 drive_directories () {
@@ -93,9 +98,9 @@ drive_directories () {
 }
 
 main () {
-
     trap onexit INT TERM ERR
     trap onexit EXIT
+
     echo "checking ${resultsdir}"
 
     mkdir -p "${resultsdir}"
@@ -133,6 +138,7 @@ main () {
             diagdir="${resultsdir}${directory}/diagnostics"
             mkdir -p "${diagdir}"
             spawn_watchers "${diagdir}"
+            sleep 5
             # Run a loop of $MAXRUNS iterations
             for (( c=1; c<=MAXRUNS; c++ )); do
 
@@ -142,8 +148,8 @@ main () {
                 echo "[RESULT] disk: ${directory} test: ${script}  run: ${c}: $(tail -n 1 ${result})"
                 rm -rf "${scr}" && mkdir -p "${scr}"
             done
-
             rm -rf "${directory}/scratch-temp"
+            kill_watch
         done
         echo -e "  \n"
     done
