@@ -1,3 +1,0 @@
-Ub16 az defaults
-OS disk r/w cache on
-Data disk cache none
