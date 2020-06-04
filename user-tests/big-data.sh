@@ -9,7 +9,7 @@ datasets=( "https://iodatasets.blob.core.windows.net/iodataset/130081_310927_bun
 # Warm the cache (store local) to exclude network variance
 for file in "${datasets[@]}"; do
     if [ ! -e ${file#$pre} ]; then
-        wget -qO "$file" "${file}"
+        wget -q "${file}"
     fi
 done
 

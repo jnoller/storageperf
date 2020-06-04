@@ -4,7 +4,7 @@ targ=$1
 
 f="latest.tar.gz"
 if [ ! -e $f ]; then
-    wget -qO- https://wordpress.org/latest.tar.gz
+    wget -q  https://wordpress.org/latest.tar.gz
 fi
 
 for n in $(seq 1 5); do
