@@ -9,9 +9,9 @@
 # /dev/sdc1      2113655728 13655060 1992610156   1% /2048gb
 
 DEBUG=${DEBUG:=0}
-MAXRUNS=${MAXRUNS:=5}
-BCCENABLED=${BCCON:=0}
-WARMCACHE=${WARMCACHE:=0}
+MAXRUNS=${MAXRUNS:=6}
+BCCENABLED=${BCCON:=1}
+WARMCACHE=${WARMCACHE:=1}
 
 timestamp=$(date +%T)
 resultsdir_base="$PWD/test_results"
@@ -64,11 +64,11 @@ spawn_watchers () {
             PROCESS_FORKS+=( "${new_pid}" )
         done
     fi
-    for comm in "${base_cmds[@]}"; do
-        eval "${comm}"
-        new_pid=$!
-        PROCESS_FORKS+=( "${new_pid}" )
-    done
+    # for comm in "${base_cmds[@]}"; do
+    #     eval "${comm}"
+    #     new_pid=$!
+    #     PROCESS_FORKS+=( "${new_pid}" )
+    # done
 
 }
 
