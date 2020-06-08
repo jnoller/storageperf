@@ -20,6 +20,7 @@ diagdir="${resultsdir}/diagnostics"
 testsdir="$PWD/user-tests"
 targets=("/ephemeral" "/os-disk")
 PROCESS_FORKS=()
+halttoken="/tmp/halt"
 
 interrogate () {
     fn="${resultsdir}/system-info"
@@ -109,7 +110,7 @@ main () {
     drive_directories
 
     for directory in "${targets[@]}"; do
-        if [ -e "halt" ]; then
+        if [ -e "${halttoken}" ]; then
             exit 1
         fi
         dname=$(basename "${directory}")
@@ -119,6 +120,9 @@ main () {
         rm -rf "${directory:?}/*"
         globber="${testsdir}/*.sh"
         for f in $globber; do
+            if [ -e "${halttoken}" ]; then
+                exit 1
+            fi
             echo -e "setting up for ${f}:\n"
             scr="${directory}/scratch-temp"
             # Setup scratch directory for tests

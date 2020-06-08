@@ -16,6 +16,6 @@ done
 targ=$1
 for file in "${datasets[@]}"; do
     mkdir -p "${targ}"
-    tar xvz -C "${targ}" -f "${file}" >"${file}.out" 2>&1
+    tar xvz -C "${targ}" -f "${file}" >"${targ}/bigdata.out" 2>&1
     rm -rf "${targ}"
 done
