@@ -18,6 +18,6 @@ done
 
 for file in "${datasets[@]}"; do
     mkdir -p "${targ}"
-    unzip "${file#$pre}" -d "${targ}/data" 2>&1
+    unzip "${file#$pre}" -d "${targ}/data" >ziplog 2>&1
     rm -rf "${targ}"
 done
