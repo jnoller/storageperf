@@ -6,17 +6,18 @@ datasets=( "https://iodatasets.blob.core.windows.net/iodataset/130081_310927_bun
         "https://iodatasets.blob.core.windows.net/iodataset/562468_1022626_bundle_archive.zip" # 1.19
 )
 
+targ=$1
+cd "${targ}" || exit 1
+
 # Warm the cache (store local) to exclude network variance
 for file in "${datasets[@]}"; do
-    if [ ! -e ${file#$pre} ]; then
+    if [ ! -e "${file#$pre}" ]; then
         wget -q "${file}"
     fi
 done
 
-targ=$1
 for file in "${datasets[@]}"; do
     mkdir -p "${targ}"
-    unzip "${file}" -d "${targ}/data" 2>&1
-
+    unzip "${file#$pre}" -d "${targ}/data" 2>&1
     rm -rf "${targ}"
 done
