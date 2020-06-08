@@ -109,6 +109,9 @@ main () {
     drive_directories
 
     for directory in "${targets[@]}"; do
+        if [ -e "halt" ]; then
+            exit 1
+        fi
         dname=$(basename "${directory}")
         mkdir -p "${resultsdir}/${dname}"
         echo "moving to ${directory}"
