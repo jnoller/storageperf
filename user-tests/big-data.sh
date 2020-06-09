@@ -10,10 +10,17 @@ targ=$1
 cd "${targ}" || exit 1
 
 # Warm the cache (store local) to exclude network variance
+skr="${targ}/databass"
+mkdir -p "${skr}"
 for file in "${datasets[@]}"; do
-    if [ ! -e "${file#$pre}" ]; then
-        wget -q "${file}"
+    fname="${file#$pre}"
+    fp="${targ}/${fname}"
+    if [ ! -f "${fp}" ]; then
+        echo "downloading data file %{fname}"
+        wget -cq "${file}"
     fi
+    unzip "${fp}" -d "${skr}" >ziplog 2>&1 || exit 1
+    rm -rf "${skr}" && mkdir -p "${skr}"
 done
 
 for file in "${datasets[@]}"; do
