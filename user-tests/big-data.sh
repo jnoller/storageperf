@@ -18,6 +18,8 @@ done
 
 for file in "${datasets[@]}"; do
     mkdir -p "${targ}"
-    unzip "${file#$pre}" -d "${targ}/data" >ziplog 2>&1
-    rm -rf "${targ}"
+    unzip "${file#$pre}" -d "${targ}/${file#$pre}" >ziplog 2>&1
+    find . -type f -exec touch {} +
+
+    rm -rf "${targ}/${file#$pre:?}"
 done

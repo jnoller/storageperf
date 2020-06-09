@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 
-sudo apt-get update && apt-get upgrade -y
+if [ "$EUID" -ne 0 ]
+    then echo "Please run as root/sudo -i bash <script>"
+    exit
+fi
+
+apt-get update && apt-get upgrade -y
 
 apt-get install -y git \
     build-essential \
@@ -14,8 +19,13 @@ apt-get install -y git \
     libffi-dev \
     zlib1g-dev \
     libaio-dev \
-    sysstat
+    sysstat \
+    unzip
 
+apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4052245BD4284CDD
+echo "deb https://repo.iovisor.org/apt/$(lsb_release -cs) $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/iovisor.list
+apt-get update
+apt-get install bcc-tools libbcc-examples linux-headers-$(uname -r)
 
 # Add the attached disks
 disks=$(fdisk -l | grep Disk | grep "/dev" | awk '{print $2}' | cut -d ":" -f1)
@@ -40,6 +50,7 @@ do
         # [-i bytes-per-inode] [-I inode-size]
         mkfs.ext4 -F "${i}"  # TBD: -o agblksize={ 512 | 1024 | 2048 | 4096 } || exit 1
         echo "${i}    /${sizen} ext4  defaults,noatime        0 0" >>/etc/fstab
+        # if mounted with sync vs async (defaults) it should force cache bypass
         mount "${i}" || mount -o remount "${i}"
     fi
 done
