@@ -7,11 +7,11 @@ datasets=( "https://iodatasets.blob.core.windows.net/iodataset/130081_310927_bun
 )
 
 targ=$1
+cache=$2
 cd "${targ}" || exit 1
 
 # Warm the cache (store local) to exclude network variance
 skr="${targ}/databass"
-cache="${targ}/cache"
 mkdir -p "${skr}"
 mkdir -p "${cache}"
 

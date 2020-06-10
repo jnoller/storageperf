@@ -125,6 +125,7 @@ main () {
             fi
             echo -e "setting up for ${f}:\n"
             scr="${directory}/scratch-temp"
+            cache="${directory}/cache"
             # Setup scratch directory for tests
             rm -rf "${scr}" && mkdir -p "${scr}"
             script=$(realpath "${f}")
@@ -138,7 +139,7 @@ main () {
             if [ "${WARMCACHE}" -eq 1 ]; then
                 # Execute the command without timing to warm the cache
                 echo "warming the cache with initial ${f} execution"
-                ${script} ${scr} >${scr}/cmd.out.log
+                ${script} ${scr} ${cache} >${scr}/cmd.out.log
                 rm -rf "${scr}" && mkdir -p "${scr}"
             fi
             base=$(basename "${script}")
@@ -151,11 +152,12 @@ main () {
 
                 result="${resultsdir}${directory}.${base}.results"
                 echo "[TEST] disk: ${directory} test: ${script} run: $c stamp: $(date)"
-                /usr/bin/time -o "${result}" --append -f "%E real,%U user,%S sys" "${script}" "${scr}"
+                /usr/bin/time -o "${result}" --append -f "%E real,%U user,%S sys" "${script}" "${scr}" "${cache}"
                 echo "[RESULT] disk: ${directory} test: ${script}  run: ${c}: $(tail -n 1 ${result})"
                 rm -rf "${scr}" && mkdir -p "${scr}"
             done
-            rm -rf "${directory}/scratch-temp"
+            rm -rf "${scr}"
+            rm -rf "${cache}"
             kill_watch
         done
         echo -e "  \n"
