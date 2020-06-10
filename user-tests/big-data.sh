@@ -20,6 +20,7 @@ for file in "${datasets[@]}"; do
     fname="${file#$pre}"
     cachepath="${cache}/${fname}"
     if [[ ! -f "${cachepath}" ]]; then
+        echo "${cachepath} missing, downloading"
         wget -cq "${file}"
     else
         unzip "${cachepath}" -d "${skr}" >ziplog 2>&1 || exit 1
