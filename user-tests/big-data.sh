@@ -11,22 +11,18 @@ cd "${targ}" || exit 1
 
 # Warm the cache (store local) to exclude network variance
 skr="${targ}/databass"
+cache="${targ}/cache"
 mkdir -p "${skr}"
+mkdir -p "${cache}"
+
+
 for file in "${datasets[@]}"; do
     fname="${file#$pre}"
-    fp="${targ}/${fname}"
-    if [ ! -f "${fp}" ]; then
-        echo "downloading data file %{fname}"
+    cachepath="${cache}/${fname}"
+    if [[ ! -f "${cachepath}" ]]; then
         wget -cq "${file}"
+    else
+        unzip "${cachepath}" -d "${skr}" >ziplog 2>&1 || exit 1
     fi
-    unzip "${fp}" -d "${skr}" >ziplog 2>&1 || exit 1
     rm -rf "${skr}" && mkdir -p "${skr}"
-done
-
-for file in "${datasets[@]}"; do
-    mkdir -p "${targ}"
-    unzip "${file#$pre}" -d "${targ}/${file#$pre}" >ziplog 2>&1
-    find . -type f -exec touch {} +
-
-    rm -rf "${targ}/${file#$pre:?}"
 done
