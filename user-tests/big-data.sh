@@ -22,8 +22,9 @@ for file in "${datasets[@]}"; do
     if [[ ! -f "${cachepath}" ]]; then
         echo "${cachepath} missing, downloading"
         wget -cq "${file}" -o "${cachepath}"
-    else
-        unzip "${cachepath}" -d "${skr}" >ziplog 2>&1 || exit 1
     fi
+    [[ -e "${cachepath}" ]] || exit 1
+
+    unzip "${cachepath}" -d "${skr}" >ziplog 2>&1 || exit 1
     rm -rf "${skr}" && mkdir -p "${skr}"
 done
