@@ -102,6 +102,16 @@ main () {
     trap onexit INT TERM ERR
     trap onexit EXIT
 
+    if [ -e ${halttoken} ]; then
+        echo -n "Is this a good question (y/n)? "
+        read -r answer
+        if [ "$answer" != "${answer#[Yy]}" ]; then
+            rm -fq ${halttoken}
+        else
+            exit 1
+        fi
+    fi
+
     echo "checking ${resultsdir}"
 
     mkdir -p "${resultsdir}"
@@ -140,7 +150,6 @@ main () {
                 # Execute the command without timing to warm the cache
                 echo "warming the cache with initial ${f} execution"
                 ${script} ${scr} ${cache} >${scr}/cmd.out.log
-                rm -rf "${scr}" && mkdir -p "${scr}"
             fi
             base=$(basename "${script}")
             diagdir="${resultsdir}${directory}/diagnostics"
@@ -153,12 +162,17 @@ main () {
                 result="${resultsdir}${directory}.${base}.results"
                 echo "[TEST] disk: ${directory} test: ${script} run: $c stamp: $(date)"
                 /usr/bin/time -o "${result}" --append -f "%E real,%U user,%S sys" "${script}" "${scr}" "${cache}"
+                # Check test status; if it fails, we drop a halt token vs performing a hard stop
+                status=$?
+                if [[ ! ${status} -eq 0 ]]; then
+                    echo "${script} execution failed, exiting"
+                    touch /tmp/halt
+                fi
                 echo "[RESULT] disk: ${directory} test: ${script}  run: ${c}: $(tail -n 1 ${result})"
-                rm -rf "${scr}" && mkdir -p "${scr}"
+                # Note: each test is responsible for the rm -rf of it's output directory
             done
-            rm -rf "${scr}"
-            rm -rf "${cache}"
             kill_watch
+            rm -rf "${cache}"
         done
         echo -e "  \n"
     done

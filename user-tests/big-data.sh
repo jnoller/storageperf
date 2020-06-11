@@ -12,9 +12,7 @@ cd "${targ}" || exit 1
 
 # Warm the cache (store local) to exclude network variance
 skr="${targ}/databass"
-mkdir -p "${skr}"
-mkdir -p "${cache}"
-
+mkdir -p "${skr}" || exit 1
 
 for file in "${datasets[@]}"; do
     fname="${file#$pre}"
@@ -23,8 +21,16 @@ for file in "${datasets[@]}"; do
         echo "${cachepath} missing, downloading"
         wget -cq "${file}" -o "${cachepath}"
     fi
-    [[ -e "${cachepath}" ]] || exit 1
+    if [[ ! -e "${cachepath}" ]]; then
+        echo "${cachepath} is missing; exiting"
+        exit 1
+    fi
 
-    unzip "${cachepath}" -d "${skr}" >ziplog 2>&1 || exit 1
+    unzip "${cachepath}" -d "${skr}" >ziplog 2>&1
+    status=$?
+    if [[ ! ${status} -eq 0 ]]; then
+        echo "unzip failed, exiting"
+        exit 1
+    fi
     rm -rf "${skr}" && mkdir -p "${skr}"
 done
