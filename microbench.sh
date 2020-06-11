@@ -103,7 +103,7 @@ main () {
     trap onexit EXIT
 
     if [ -e ${halttoken} ]; then
-        echo -n "Is this a good question (y/n)? "
+        echo -n "Detected ${halttoken} - remove (y/n)? "
         read -r answer
         if [ "$answer" != "${answer#[Yy]}" ]; then
             rm -fq ${halttoken}
