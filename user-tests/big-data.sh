@@ -19,7 +19,7 @@ for file in "${datasets[@]}"; do
     cachepath="${cache}/${fname}"
     if [[ ! -f "${cachepath}" ]]; then
         echo "${cachepath} missing, downloading"
-        wget -cq -o "${cachepath}" "${file}"
+        curl -o "${cachepath}" "${file}"
     fi
     if [[ ! -e "${cachepath}" ]]; then
         echo "${cachepath} is missing; exiting"
