@@ -19,7 +19,7 @@ for file in "${datasets[@]}"; do
     cachepath="${cache}/${fname}"
     if [[ ! -f "${cachepath}" ]]; then
         echo "${cachepath} missing, downloading"
-        curl -o "${cachepath}" "${file}"
+        curl -o "${cachepath}" "${file}" >curllog 2>&1
     fi
     if [[ ! -e "${cachepath}" ]]; then
         echo "${cachepath} is missing; exiting"
@@ -32,5 +32,6 @@ for file in "${datasets[@]}"; do
         echo "unzip failed, exiting"
         exit 1
     fi
+
     rm -rf "${skr}" && mkdir -p "${skr}"
 done
