@@ -106,7 +106,7 @@ main () {
         echo -n "Detected ${halttoken} - remove (y/n)? "
         read -r answer
         if [ "$answer" != "${answer#[Yy]}" ]; then
-            rm -fq ${halttoken}
+            rm -f ${halttoken}
         else
             exit 1
         fi
