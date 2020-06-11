@@ -172,7 +172,7 @@ main () {
                 # Note: each test is responsible for the rm -rf of it's output directory
             done
             kill_watch
-            rm -rf "${cache}"
+            rm -rf "${cache}" && mkdir -p "${cache}"
         done
         echo -e "  \n"
     done
