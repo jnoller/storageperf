@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 targ=$1
-
+cache=$2
 f="latest.tar.gz"
 if [ ! -e $f ]; then
     wget -q  https://wordpress.org/latest.tar.gz
