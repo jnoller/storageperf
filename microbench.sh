@@ -136,7 +136,7 @@ main () {
             echo -e "setting up for ${f}:\n"
             scr="${directory}/scratch-temp"
             cache="${directory}/cache"
-            # Setup scratch directory for tests
+            rm -rf "${cache}" && mkdir -p "${cache}"
             rm -rf "${scr}" && mkdir -p "${scr}"
             script=$(realpath "${f}")
             scriptpath=$(dirname "${script}")
@@ -172,7 +172,6 @@ main () {
                 # Note: each test is responsible for the rm -rf of it's output directory
             done
             kill_watch
-            rm -rf "${cache}" && mkdir -p "${cache}"
         done
         echo -e "  \n"
     done
