@@ -89,9 +89,11 @@ function onexit() {
 
 drive_directories () {
     disks=$(sudo fdisk -l | grep Disk | grep "/dev" | awk '{print $2}' | cut -d ":" -f1)
+    root=$(mount|grep ' / '|cut -d' ' -f 1)
+    temp=$(mount|grep ' /mnt '|cut -d' ' -f 1)
     for i in ${disks};
     do
-        if [ "${i}" != "/dev/sda" ] && [ "${i}" != "/dev/sdb" ]; then
+        if [ "${i}" != "${root%?}" ] && [ "${i}" != "${temp%?}" ]; then
             sizen=$(sudo fdisk "${i}" -l | grep Disk | grep "/dev" | awk '{print $3$4}' | cut -d "," -f1)
             targets+=("/${sizen}")
         fi
