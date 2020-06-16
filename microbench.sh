@@ -136,6 +136,7 @@ main () {
             echo -e "setting up for ${f}:\n"
             scr="${directory}/scratch-temp"
             cache="${directory}/cache"
+            echo "cleaning cache and scratch directory"
             rm -rf "${cache}" && mkdir -p "${cache}"
             rm -rf "${scr}" && mkdir -p "${scr}"
             script=$(realpath "${f}")
