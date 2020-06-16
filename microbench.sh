@@ -161,7 +161,7 @@ main () {
 
                 result="${resultsdir}${directory}.${base}.results"
                 echo "[TEST] disk: ${directory} test: ${script} run: $c stamp: $(date)"
-                /usr/bin/time -o "${result}" --append -f "%E real,%U user,%S sys" "${script}" "${scr}" "${cache}"
+                /usr/bin/time -o "${result}" --append -f "%E real,%U user,%S sys" "${script}" "${scr} ${cache}"
                 # Check test status; if it fails, we drop a halt token vs performing a hard stop
                 status=$?
                 if [[ ! ${status} -eq 0 ]]; then
