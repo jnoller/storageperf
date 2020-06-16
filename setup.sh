@@ -25,16 +25,18 @@ apt-get install -y git \
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4052245BD4284CDD
 echo "deb https://repo.iovisor.org/apt/$(lsb_release -cs) $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/iovisor.list
 apt-get update
-apt-get install bcc-tools libbcc-examples linux-headers-$(uname -r)
+apt-get install -y bcc-tools libbcc-examples linux-headers-$(uname -r)
 
 # Add the attached disks
 disks=$(fdisk -l | grep Disk | grep "/dev" | awk '{print $2}' | cut -d ":" -f1)
+root=$(mount|grep ' / '|cut -d' ' -f 1)
+temp=$(mount|grep ' /mnt '|cut -d' ' -f 1)
 for i in ${disks};
 do
-    if [ "${i}" = "/dev/sda" ]; then
+    if [ "${i}" = "${root%?}" ]; then
         mkdir -p /os-disk
         chmod a+rwx /os-disk
-    elif [ "${i}" = "/dev/sdb" ]; then
+    elif [ "${i}" = "${temp%?}" ]; then
         rm -f /ephemeral
         ln -fs /mnt /ephemeral
         chmod a+rwx /ephemeral
