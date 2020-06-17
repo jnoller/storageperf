@@ -1,0 +1,40 @@
+Linux bench1804 5.3.0-1020-azure #21~18.04.1-Ubuntu SMP Wed Apr 15 09:35:56 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+cpu:      Intel(R) Xeon(R) CPU E5-2673 v4 @ 2.30GHz
+cores:     4
+===========================================================
+scheduler:     [mq-deadline] none
+read_ahead_kb:     128
+max_sectors_kb:     512
+scheduler:     [mq-deadline] none
+read_ahead_kb:     128
+max_sectors_kb:     512
+scheduler:     [mq-deadline] none
+read_ahead_kb:     128
+max_sectors_kb:     512
+scheduler:     [mq-deadline] none
+read_ahead_kb:     128
+max_sectors_kb:     512
+scheduler:     [mq-deadline] none
+read_ahead_kb:     128
+max_sectors_kb:     512
+scheduler:     [mq-deadline] none
+read_ahead_kb:     128
+max_sectors_kb:     512
+scheduler:     [mq-deadline] none
+read_ahead_kb:     128
+max_sectors_kb:     512
+scheduler:     [mq-deadline] none
+read_ahead_kb:     128
+max_sectors_kb:     512
+scheduler:     [mq-deadline] none
+read_ahead_kb:     128
+max_sectors_kb:     512
+scheduler:     [mq-deadline] none
+read_ahead_kb:     128
+max_sectors_kb:     512
+transparent_hugepage:     [always] madvise never
+panic_on_oom:     0
+swappiness:     60
+kernel panic:     0
+\n\n
+Filesystem      Size  Used Avail Use% Mounted onudev            7.8G     0  7.8G   0% /devtmpfs           1.6G  784K  1.6G   1% /run/dev/sdi1        29G  2.3G   27G   8% /tmpfs           7.9G     0  7.9G   0% /dev/shmtmpfs           5.0M     0  5.0M   0% /run/locktmpfs           7.9G     0  7.9G   0% /sys/fs/cgroup/dev/sdi15      105M  3.6M  101M   4% /boot/efi/dev/sdj1        32G   49M   30G   1% /mnttmpfs           1.6G     0  1.6G   0% /run/user/1000/dev/sda         16G   45M   15G   1% /16GiB/dev/sdb         32G   49M   30G   1% /32GiB/dev/sdc        251G   61M  239G   1% /256GiB/dev/sdd       1007G   77M  956G   1% /1TiB/dev/sde        125G   61M  119G   1% /128GiB/dev/sdf        2.0T   81M  1.9T   1% /2TiB/dev/sdg        503G   73M  478G   1% /512GiB/dev/sdh         63G   53M   60G   1% /64GiB
