@@ -7,14 +7,6 @@ queue_depth=${MAX_SECTORS_KB:="64"} # Need to validate Azure guidance re: qdepth
 transparent_hugepage=${TRANSPARENT_HUGEPAGE:="always"}
 
 
-
-if [ ! "enabled" = "$(systemctl is-enabled ebpf_exporter.service)" ]; then
-    systemctl daemon-reload
-    systemctl enable ebpf_exporter.service
-    systemctl restart ebpf_exporter.service
-fi
-
-
 # Set the scheduler and other block device tunables for all disks
 for device in /sys/block/sd*;
 do
