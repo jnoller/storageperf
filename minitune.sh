@@ -18,10 +18,6 @@ done
 # Transparent huge pages
 echo "${transparent_hugepage}" > /sys/kernel/mm/transparent_hugepage/enabled
 
-# Disable protected kernel defaults - this is on for CIS compliance but enforces
-# the OOMKiller settings
-sed -i 's/--protect-kernel-defaults=true/--protect-kernel-defaults=false/g' /etc/default/kubelet
-
 if [ ! "1" = "$(cat /proc/sys/vm/panic_on_oom)" ]; then
     sudo echo 1 > /proc/sys/vm/panic_on_oom
 fi
