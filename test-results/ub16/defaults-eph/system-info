@@ -1,0 +1,40 @@
+Linux ub16-eph 4.15.0-1083-azure #93~16.04.1-Ubuntu SMP Thu May 7 18:39:44 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+cpu:      Intel(R) Xeon(R) CPU E5-2673 v3 @ 2.40GHz
+cores:     4
+===========================================================
+scheduler:     [none] 
+read_ahead_kb:     128
+max_sectors_kb:     512
+scheduler:     [none] 
+read_ahead_kb:     128
+max_sectors_kb:     512
+scheduler:     [none] 
+read_ahead_kb:     128
+max_sectors_kb:     512
+scheduler:     [none] 
+read_ahead_kb:     128
+max_sectors_kb:     512
+scheduler:     [none] 
+read_ahead_kb:     128
+max_sectors_kb:     512
+scheduler:     [none] 
+read_ahead_kb:     128
+max_sectors_kb:     512
+scheduler:     [none] 
+read_ahead_kb:     128
+max_sectors_kb:     512
+scheduler:     [none] 
+read_ahead_kb:     128
+max_sectors_kb:     512
+scheduler:     [none] 
+read_ahead_kb:     128
+max_sectors_kb:     512
+scheduler:     [none] 
+read_ahead_kb:     128
+max_sectors_kb:     512
+transparent_hugepage:     [always] madvise never
+panic_on_oom:     0
+swappiness:     60
+kernel panic:     0
+\n\n
+Filesystem      Size  Used Avail Use% Mounted onudev            7.9G     0  7.9G   0% /devtmpfs           1.6G   25M  1.6G   2% /run/dev/sda1        29G  1.6G   28G   6% /tmpfs           7.9G     0  7.9G   0% /dev/shmtmpfs           5.0M     0  5.0M   0% /run/locktmpfs           7.9G     0  7.9G   0% /sys/fs/cgroup/dev/sda15      105M  3.6M  101M   4% /boot/efi/dev/sdb1        32G   60M   30G   1% /mnttmpfs           1.6G     0  1.6G   0% /run/user/1000/dev/sde        252G   71M  239G   1% /256GiB/dev/sdg        504G   82M  479G   1% /512GiB/dev/sdf         63G   64M   60G   1% /64GiB/dev/sdh       1008G   84M  957G   1% /1TiB/dev/sdi         32G   60M   30G   1% /32GiB/dev/sdd        2.0T   82M  1.9T   1% /2TiB/dev/sdc         16G   56M   15G   1% /16GiB/dev/sdj        126G   72M  120G   1% /128GiB
